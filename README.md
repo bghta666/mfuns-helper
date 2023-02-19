@@ -1,0 +1,26 @@
+<div align="center">
+<h1> m站辅助工具python版本
+</h1>
+
+<p>当前版本：2.1</p>
+
+ </div>
+
+### 支持功能
+- [x] 账号密码登录
+- [x] 获取用户信息
+- [x] 每日签到
+- [x] 领取 *7/10/15/20/28天* 签到奖励
+- [x] 喜欢10个帖子
+- [x] 点赞10个评论
+- [x] 打赏3帖子并领取任务奖励
+- [x] 消息推送 ([Server酱](https://sct.ftqq.com/) 或 [pushplus](https://www.pushplus.plus/))
+- ~~[x]自动孵蛋与自动ntr~~ (等新站出了再写)
+
+---
+
+### 使用说明
+支持本地使用和线上搭建\
+具体教程见b站视频: [【开源】m站辅助工具python版本v2.1（支持线上部署）](https://www.bilibili.com/video/BV1Lx4y1c7eE/)
+
+在config.py中修改配置
