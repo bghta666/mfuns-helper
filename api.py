@@ -1,16 +1,18 @@
+import random
+
+import requests
+from lxml import etree
 from requests import Session
 
 from config import *
-import requests
-import random
 from loguru import logger
-from lxml import etree
 
 log = logger.bind(user="m站辅助工具")
 s: Session = requests.Session()
 
 
 def 登录(账号, 密码):
+    s = requests.Session()
     url = 'https://www.mfuns1.cn/wp-content/themes/LightSNS/module/action/login.php'
     headers = {
         "User-Agent": "Mozilla/5.0 (Linux; Android 11; M2007J17C Build/RKQ1.200826.002)"
@@ -23,7 +25,10 @@ def 登录(账号, 密码):
     }
     r = s.post(url, headers=headers, data=data)
     log.info(f'返回信息:{r.json()}')
-    cookie = r.headers['set-cookie']
+    if 'set-cookie' in r.headers:
+        cookie = r.headers['set-cookie']
+    else:
+        cookie = r.headers['cookie']
     log.success(f'登录成功!  cookie: {cookie}')
     return cookie
 
@@ -34,7 +39,10 @@ def 获取用户信息():
     html = etree.HTML(r.text)
     uid = html.xpath('//a/@href')[0]
     uid = uid[uid.rfind("/") + 1:]
-    用户名 = html.xpath("//div[@class='name']/a/text()")[0]
+    try:
+        用户名 = html.xpath("//div[@class='name']/a/text()")[0]
+    except Exception:
+        用户名 = html.xpath("//div[@class='name']/a/font/text()")[0]
     喵币 = html.xpath('//i/text()')[0]
     经验 = 获取经验()
     log.success(f'登录成功!  当前用户名: {用户名}  uid: {uid}  喵币: {喵币}   经验: {经验}')

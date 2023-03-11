@@ -63,31 +63,37 @@ def 处理经验(经验):
     return int(经验[:经验.find('/')])
 
 
-def 推送任务(用户名, uid, 喵币, 经验, nck, 签到成功, 点赞成功, 打赏成功):
-    log.info(f"第 {nck} 个用户( uid:{uid} 用户名:{用户名})任务结束，开始推送！")
-    with open(f'log.log', 'r', encoding='utf-8') as f:
-        内容 = f.read()
+def 推送任务(info):
     try:
-        新经验 = 获取经验()
-        经验差 = 处理经验(新经验) - 处理经验(经验)
-        msg = f'''
-        当前用户({nck}): {用户名} ({uid})
-        喵币数量: {喵币}
-        经验: {新经验} ({处理经验(经验)} + {经验差})
-        今日任务执行完毕!
-        签到成功: {签到成功}
-        点赞成功: {点赞成功}
-        打赏成功: {打赏成功}
-        
-        详细调试信息:
-{内容}
-        '''
+        msg = ''
+        for i in info:
+            用户名, uid, 喵币, 经验, nck, 签到成功, 点赞成功, 打赏成功, 新经验 = i
+            经验差 = 处理经验(新经验) - 处理经验(经验)
+            msg += f'''
+            当前用户({nck}): {用户名} ({uid})
+            喵币数量: {喵币}
+            经验: {新经验} ({处理经验(经验)} + {经验差})
+            今日任务执行完毕!
+            签到成功: {签到成功}
+            点赞成功: {点赞成功}
+            打赏成功: {打赏成功}
+            ----------------------------------------------
+            '''
+
+        with open(f'log.log', 'r', encoding='utf-8') as f:
+            内容 = f.read()
+            msg += f'''
+            详细调试信息:
+            {内容}'''
         print(msg)
         if Server酱_key != '':
             Server酱推送(msg)
+            return True
         if pushplus_key != '':
             pushplus推送(msg)
-        return True
+            return True
+        log.warning(f'未配置推送地址!')
+        return False
     except Exception:
         return False
 
@@ -129,26 +135,35 @@ def 执行用户任务(cookie, nck):
             log.error("打赏任务执行失败")
     else:
         log.error("设置不执行打赏任务,已跳过")
-
-    推送成功 = 推送任务(用户名, uid, 喵币, 经验, nck, 签到成功, 点赞成功, 打赏成功)
-    if 推送成功:
-        log.success("推送任务执行成功")
-    else:
-        log.error("推送任务执行失败")
+    log.info(f"第 {nck} 个用户( uid:{uid} 用户名:{用户名})任务结束")
+    新经验 = 获取经验()
+    return (用户名, uid, 喵币, 经验, nck, 签到成功, 点赞成功, 打赏成功, 新经验)
 
 
 def main():
-    log.warning("当前版本为: {ver}".format(ver=ver))
+    import os
+    if os.path.exists("log.log"):
+        os.remove("log.log")
+    log.warning(f"当前版本为: {ver}")
     log.info("m站辅助工具 python版")
     num = 0
+    info = []
     for ckk in ck:
-        if '#' in ckk:
-            ckk = 登录(ckk[:ckk.find('#')], ckk[ckk.find('#') + 1:])
-        log.add('log.log', encoding='utf-8', retention=0)
         num += 1
-        log.info(f"当前开始执行第 {num}/{len(ck)} 个用户任务")
-        执行用户任务(ckk, f'{num}/{len(ck)}')
-    log.info(f'共 {num} 个用户 所有任务执行完毕')
+        if '#' in ckk:
+            try:
+                ckk = 登录(ckk[:ckk.find('#')], ckk[ckk.find('#') + 1:])
+                log.add('log.log', encoding='utf-8', retention=0)
+                log.info(f"当前开始执行第 {num}/{len(ck)} 个用户任务")
+                info.append(执行用户任务(ckk, f'{num}/{len(ck)}'))
+            except Exception:
+                log.error("登录失败")
+                log.warning(f"跳过执行第 {num}/{len(ck)} 个用户任务")
+    log.info(f'共 {num} 个用户 所有任务执行完毕，开始推送！')
+    if 推送任务(info):
+        log.success("推送任务执行成功")
+    else:
+        log.error("推送任务执行失败")
 
 
 def handler(event, context):
