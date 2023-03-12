@@ -50,7 +50,11 @@ def 打赏任务():
                 log.error("打赏任务执行错误: 数量过多")
                 break
             tid = get_id(170000)
-            if 打赏帖子(tid, i)['code'] == 0:
+            ret=打赏帖子(tid, i)
+            if ret['code'] == 0:
+                if ret['msg']=='你的喵币不足！':
+                    log.warning(f'tid:{tid}   喵币不足! 于是停止打赏任务')
+                    break
                 log.warning(f'tid:{tid}   打赏失败! 于是任务数量+1')
                 i -= 1
         领取打赏任务奖励()

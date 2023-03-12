@@ -15,5 +15,5 @@ Server酱_key = ''  # https://sct.ftqq.com/
 pushplus_key = ''  # https://www.pushplus.plus/
 # ------------------------配置区域------------------------
 
-ver = '2.2'
+ver = '2.3'
 ck = list(filter(None, ck.split('\n')))
