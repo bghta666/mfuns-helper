@@ -1,11 +1,10 @@
 from api import *
 
-
 def 签到任务():
     log.success("开始执行签到任务")
     try:
         签到()
-        for i in range(4):
+        for i in range(5):
             领取签到奖励(str(i))
         return True
     except Exception:
@@ -111,8 +110,14 @@ def 执行用户任务(cookie, nck):
     try:
         用户名, uid, 喵币, 经验 = 获取用户信息()
     except Exception:
-        log.error("获取信息失败")
-        return
+        try:
+            用户名, uid, 喵币, 经验 = 获取用户信息()
+        except Exception:
+            try:
+                用户名, uid, 喵币, 经验 = 获取用户信息()
+            except Exception:
+                log.error("获取信息失败")
+                return
     if 执行签到任务:
         签到成功 = 签到任务()
         if 签到成功:
