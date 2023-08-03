@@ -38,3 +38,10 @@
 [【开源】m站辅助工具python版本v2.1（支持线上部署）](https://www.bilibili.com/video/BV1Lx4y1c7eE/)\
 [【开源】m站辅助工具python版本v2.3 及 线上部署教程](https://www.bilibili.com/video/BV1Yk4y187LH/)\
 在config.py中修改配置
+
+
+---
+
+### 关于新版本
+m站新站辅助工具\
+https://github.com/bghta666/mfunsNew
